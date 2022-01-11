@@ -61,6 +61,13 @@ app_layout = html.Div(children=[
                     id="filename-text",
                     children="Upload a data file to begin",
                     style={'display': 'inline-block','vertical-align': 'top', 'margin': '10px'}),
+                dcc.Checklist(
+                    id="use-default-dataset",
+                    options=[
+                            {'label': 'Use default dataset', 'value': 'default'},
+                        ],
+                        value=[]
+                    )
             ],style={'display': 'inline-block','vertical-align': 'top', 'margin': '10px'}),
             html.Div([
                 html.Div(children=[

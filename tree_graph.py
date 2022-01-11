@@ -40,9 +40,9 @@ class Tree_plotter:
 
         #Labels visibility logic
         if self.show_labels == "all":
-            self.full_df["id_label"] = self.full_df["id.coral"]
+            self.full_df["id_label"] = self.full_df["id.base"]
         if self.show_labels == "results":
-            self.full_df["id_label"] = [row["id.coral"] if row[self.var] > 0 else None for i, row in self.full_df.iterrows()]
+            self.full_df["id_label"] = [row["id.base"] if row[self.var] > 0 else None for i, row in self.full_df.iterrows()]
         if self.show_labels == "none":
             self.full_df["id_label"] = None
 
@@ -62,7 +62,7 @@ class Tree_plotter:
                     size=scatter_size,
                     size_max=scatter_size_max,
                     text="id_label",
-                    hover_data=["id.coral", "id.uniprot"])
+                    hover_data=["id.base", "id.uniprot"])
         
         fig.update_layout(clickmode='event+select')
         

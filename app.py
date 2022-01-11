@@ -36,47 +36,27 @@ tree_graph = Tree_plotter()
 
 app.layout = app_layout
 
-#Drawing time-series 3D graph
-def draw_3d_graph(contents):
-    contents_string=contents[0].split(',')[1]
-    decoded = base64.b64decode(contents_string)
-    try:
-        df = pd.read_csv(
-                io.StringIO(decoded.decode('utf-8')), sep='\t')
-    except Exception as e:
-        print(e)
-        return html.Div([
-            'There was an error processing this file. {}'.format(e),
-            '{}'.format(decoded)
-        ])
-    df_tidy = pd.melt(df, ["id"], var_name="data_point", value_name="value")
-    #fig=px.scatter_3d(df_tidy, x="id", y="data_point", z="value")
-    fig=px.line_3d(df_tidy, x="id", y="data_point", z="value", line_group="id")
-    fig.update_layout(clickmode='event+select')
-    #return html.Div(children=[
-    #    dcc.Graph(
-    #        id='main-graph',
-    #        figure=fig
-    #        )])
-    return html.Div([
-            "Not yet ready, work in progress"
-        ])
-
 #Drawing kinase tree
-def draw_tree(contents, graph_type):
+def draw_tree(contents, use_default, graph_type):
     full_dataframe = pd.read_csv("data/{}_dataframe.tsv".format(graph_type), sep='\t')
-    contents_string=contents[0].split(',')[1]
-    decoded = base64.b64decode(contents_string)
-    try:
+    if use_default == ["default"]:
         df = pd.read_csv(
-                io.StringIO(decoded.decode('utf-8')), sep='\t')
-        df["id"]=[id.split(";")[0] for id in df[df.columns[0]]]
-    except Exception as e:
-        print(e)
-        return html.Div([
-            'There was an error processing this file. {}'.format(e),
-            '{}'.format(decoded)
-        ])
+                   "data/sample_tree_data.csv", sep='\t')
+        df["id"]=df[df.columns[0]]
+        print(df)
+    else:
+        contents_string=contents[0].split(',')[1]
+        decoded = base64.b64decode(contents_string)
+        try:
+            df = pd.read_csv(
+                    io.StringIO(decoded.decode('utf-8')), sep='\t')
+            df["id"]=[id.split(";")[0] for id in df[df.columns[0]]]
+        except Exception as e:
+            print(e)
+            return html.Div([
+                'There was an error processing this file. {}'.format(e),
+                '{}'.format(decoded)
+            ])
     #Create a Tree Plotter class
     tree_graph.source_df=full_dataframe
     tree_graph.df=df
@@ -130,12 +110,13 @@ def toggle_modal(n1, n2, is_open):
 @app.callback(
     Output('output-data-upload', 'children'),
     State("graph-type","value"),
+    State("use-default-dataset","value"),
     Input("generate-button","n_clicks"),
     Input('upload-data', 'contents'))
-def generate_graph(value, n_clicks, contents):
+def generate_graph(value, use_default, n_clicks, contents):
     changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
     if 'generate-button' in changed_id:
-        children=draw_tree(contents, value)
+        children=draw_tree(contents, use_default, value)
         return [children, None]
 
 #On-click data
@@ -144,11 +125,12 @@ def generate_graph(value, n_clicks, contents):
     Input('main-graph', 'clickData'),
     State("graph-type","value"))
 def display_click_data(clickData, graph_type):
-    if graph_type=="kinasetree":
+    full_dataframe = tree_graph.full_df
+    if graph_type=="kinase":
         id = clickData['points'][0]['customdata'][0]
-    if graph_type=="phosphatasetree":
+    if graph_type=="exampletase":
         id = clickData['points'][0]['x']
-    uniprot_id = full_dataframe[full_dataframe['id.coral']==id]['id.uniprot'].values[0]
+    uniprot_id = full_dataframe[full_dataframe['id.base']==id]['id.uniprot'].values[0]
     markdown_string='''
         ID: **{id}**
         Uniprot ID: {uniprot_id}
@@ -156,7 +138,8 @@ def display_click_data(clickData, graph_type):
     return html.Div(id='onclick-data',children=[
         dcc.Markdown(id='onclick-text',children=markdown_string),
         html.A("Uniprot Data", href='https://www.uniprot.org/uniprot/{uniprot_id}'.format(uniprot_id=uniprot_id), target="_blank"),
-        html.P(json.dumps(clickData, indent=2)),
+        #Displaying all click data disabled
+        #html.P(json.dumps(clickData, indent=2)),
         html.Div([
         html.Button("Download Data", id="download-button"),
         dcc.Download(id="download-data")])
