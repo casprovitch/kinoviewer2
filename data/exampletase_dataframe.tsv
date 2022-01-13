@@ -1,0 +1,6 @@
+	id.base	id.uniprot	id.ensembl	id.entrez	id.HGNC	id.longname	group	family	subfamily	branch.val	branch.group	branch.col	node.x	node.y	node.group.col	node.val.col	node.val.radius	node.radius	node.col	node.strokewidth	node.strokecol	text.x	text.y	text.col	text.font	text.size	text.label	node.opacity	node.selected	branch.coords
+0	LOREM	X12345	ENSG00000000000	00000	LOR	Lorem 1	Lorem	Lorem		0	none	#D3D3D3	300	300	none	0	0	5	#D3D3D3	1	black	346.8112	368.3386	black	'Roboto-Bold'	3.25	Lorem	1	-1	M 0 0 L 300 300 Z
+1	IPSUM	X12345	ENSG00000000000	00000	IPS	Ipsum 1	Ipsum	Ipsum		0	none	#D3D3D3	300	0	none	0	0	5	#D3D3D3	1	black	346.8112	368.3386	black	'Roboto-Bold'	3.25	Ipsum	1	-1	M 0 0 L 300 0 Z
+2	DOLOR	X12345	ENSG00000000000	00000	DOL	Dolor 1	Dolor	Dolor		0	none	#D3D3D3	300	-300	none	0	0	5	#D3D3D3	1	black	346.8112	368.3386	black	'Roboto-Bold'	3.25	Dolor	1	-1	M 0 0 L 300 -300 Z
+3	SIT	X12345	ENSG00000000000	00000	SIT	Sit 1	Sit	Sit		0	none	#D3D3D3	0	-300	none	0	0	5	#D3D3D3	1	black	346.8112	368.3386	black	'Roboto-Bold'	3.25	Sit	1	-1	M 0 0 L 0 -300 Z
+4	AMET	X12345	ENSG00000000000	00000	AMT	Amet 1	Amet	Amet		0	none	#D3D3D3	-300	-300	none	0	0	5	#D3D3D3	1	black	346.8112	368.3386	black	'Roboto-Bold'	3.25	Amet	1	-1	M 0 0 L -300 -300 Z
