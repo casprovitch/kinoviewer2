@@ -50,6 +50,9 @@ def draw_tree(contents, use_default, graph_type):
         try:
             df = pd.read_csv(
                     io.StringIO(decoded.decode('utf-8')), sep='\t')
+            if len(df.columns) == 1:
+                df = pd.read_csv(
+                    io.StringIO(decoded.decode('utf-8')), sep=',')
             df["id"]=[id.split(";")[0] for id in df[df.columns[0]]]
         except Exception as e:
             print(e)
@@ -172,5 +175,9 @@ def func(n_clicks, children):
     return dict(content=json.dumps(children),filename='output.txt')
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    #Docker deployment
+    app.run_server(host='0.0.0.0', port=8050, debug=False)
+    #Local testing
+#    app.run_server(debug=True)
+    #Local as deployed
 #    app.run_server(debug=False)

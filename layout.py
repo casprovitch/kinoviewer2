@@ -27,10 +27,10 @@ styles = {
 
 app_layout = html.Div(children=[
     html.H1(
-        children='Viewer',
+        children='KINOVIEWER 2',
         style={
             'textAlign': 'center',
-            'color': colors['text']
+            'color': 'black'
         }
     ),
     html.Div(children=[
@@ -89,7 +89,9 @@ app_layout = html.Div(children=[
                                    'width': '200px',
                                    'height': '60px',
                                    'vertical-align': 'top',
-                                   'display': 'inline-block'})
+                                   'display': 'inline-block',
+                                   'background-color': 'green',
+                                   'color': 'white'})
                         ], style={'display': 'inline-block'}),
                 ],style={'display': 'inline-block','vertical-align': 'top', 'margin': '10px'}),
             html.Button("Help?", id="help-button",
@@ -98,15 +100,21 @@ app_layout = html.Div(children=[
                                'height': '60px',
                                'margin': '10px',
                                'vertical-align': 'top',
-                               'display': 'inline-block'}),
+                               'display': 'inline-block',
+                               'background-color': 'blue',
+                               'color': 'white',
+                               'float': 'right'}),
 
             dbc.Modal(
                 [
                     dbc.ModalHeader(dbc.ModalTitle("How to use"), close_button=True),
-                    dbc.ModalBody("""Upload a CSV file using button in top left corner\n
-                                    Select Graph Type and Options using radio buttons\n
-                                    Click Generate Graph to draw it
-                                    """),
+                    dbc.ModalBody(children=[
+                                        html.Div("""Upload a CSV file using button in top left corner"""),
+                                        html.Div("""CSV file needs to contain 2 columns:\n- protein ID (Uniprot)\n- oberved values (abundance or log)\nseparated by either tab or comma"""),
+                                        html.Div("""\nSelect Graph Type and Options using radio buttons"""),
+                                        html.Div("""\nClick Generate Graph to draw it"""),
+                                        html.Div(),
+                                            ],style={'white-space': 'pre'}),
                     dbc.ModalFooter(
                         dbc.Button(
                             "Close", id="close-help", className="ms-auto", n_clicks=0
@@ -167,14 +175,17 @@ app_layout = html.Div(children=[
                         labelStyle={'display': 'block'},
                         #style={'display': 'inline-block'}
                     )],
-                    style={'border': 'thin lightgrey solid'}),
+                    style={
+                        'float': 'right',
+                        #'border': 'thin lightgrey solid'
+                        }),
 
                     html.Div(children=[
                         dcc.Markdown("""
                                 **Click Data**
 
                                 Click on points in the graph to display additional data below
-                            """),
+                            """,style={'text-align': 'centre'}),
                         html.Pre(id='click-data', style={'vertical-align': 'right', 'width': '30vh', 'height': '30vh'}),
                         ], style={'vertical-align': 'top', 'width': '30vh', 'height': '30vh'})
                 ], style={'vertical-align': 'top', 'display': 'inline-block'})
