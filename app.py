@@ -43,7 +43,6 @@ def draw_tree(contents, use_default, graph_type):
         df = pd.read_csv(
                    "data/sample_tree_data.csv", sep='\t')
         df["id"]=df[df.columns[0]]
-        print(df)
     else:
         contents_string=contents[0].split(',')[1]
         decoded = base64.b64decode(contents_string)
@@ -176,8 +175,8 @@ def func(n_clicks, children):
 
 if __name__ == '__main__':
     #Docker deployment
-    app.run_server(host='0.0.0.0', port=8050, debug=False)
+#    app.run_server(host='0.0.0.0', port=8050, debug=False)
     #Local testing
-#    app.run_server(debug=True)
+    app.run_server(debug=True)
     #Local as deployed
 #    app.run_server(debug=False)

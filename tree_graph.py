@@ -3,6 +3,13 @@ import plotly.graph_objects as go
 import plotly.express as px
 import numpy as np
 import pandas as pd
+
+#Various variables to avoid hard coding
+opacity_missing=0.1
+opacity_normal=0.8
+branch_opacity_missing=0.2
+branch_opacity_normal=1
+
 class Tree_plotter:
     """
     Class for plotting the tree graph
@@ -51,20 +58,28 @@ class Tree_plotter:
             scatter_colour = "group"
             scatter_size = self.var
             scatter_size_max = None
+            self.full_df["opacity"] = opacity_normal
         if self.display_style == "gradient-colour":
+#            self.full_df[self.var] = self.full_df[self.var].fillna(0)
             self.full_df["marker_size"] = 15
             scatter_colour = self.var
             scatter_size = "marker_size"
             scatter_size_max = 15
-        
+            #Set opacity depending on the value, transparent for null
+            self.full_df["opacity"] = [opacity_missing if n==1 else opacity_normal for n in self.full_df[self.var].isnull()]
         fig = px.scatter(self.full_df, x="node.x", y="node.y",
                     color=scatter_colour,
                     size=scatter_size,
                     size_max=scatter_size_max,
                     text="id_label",
+#                    color_continuous_scale="blues",
                     hover_data=["id.base", "id.uniprot"])
         
-        fig.update_layout(clickmode='event+select')
+        #Pass on uirevision variable to restart the zoom and other user changes if redrawing the graph
+        fig.update_layout(uirevision="nochange")
+        fig.update_layout(clickmode='event+select',uirevision="nochange")
+        #Update opacity of the traces
+        fig.update_traces(marker_opacity=self.full_df["opacity"], selector=dict(type='scatter'))
         
         self.groups_df = pd.read_csv("data/{}_group_labels.tsv".format(self.graph_type), sep='\t')
         for i, group in self.groups_df.iterrows():
@@ -77,22 +92,22 @@ class Tree_plotter:
 #        fig.add_trace(
 #            go.Scatter(x=df["text.x"],y=df["text.y"],text=df["id"],mode="text")
 #            )
-        fig.update_layout(yaxis_visible=False, yaxis_showticklabels=False)
-        fig.update_layout(xaxis_visible=False, xaxis_showticklabels=False)
+        fig.update_layout(yaxis_visible=False, yaxis_showticklabels=False,uirevision="nochange")
+        fig.update_layout(xaxis_visible=False, xaxis_showticklabels=False,uirevision="nochange")
         #fig.update_layout(xaxis_range=[0,2000])
         #fig.update_layout(yaxis_range=[0,2000])
-        fig.update_layout(plot_bgcolor= 'rgba(0, 0, 0, 0)', paper_bgcolor= 'rgba(0, 0, 0, 0)')
+        fig.update_layout(plot_bgcolor= 'rgba(0, 0, 0, 0)', paper_bgcolor= 'rgba(0, 0, 0, 0)',uirevision="nochange")
         if self.show_paths == "none":
             pass
         else:
             if self.show_paths == "all":
-                self.full_df["branch.opacity"] = 1
+                self.full_df["branch.opacity"] = branch_opacity_normal
                 path_df=self.full_df[["branch.coords", "branch.col", "branch.opacity"]]
             if self.show_paths == "results":
-                self.full_df["branch.opacity"] = [1 if ((x[self.var] is not None) and (x[self.var] > 0)) else 0.3 for i, x in self.full_df.iterrows()]
+                self.full_df["branch.opacity"] = [branch_opacity_normal if ((x[self.var] is not None) and (x[self.var] != 0)) else branch_opacity_missing for i, x in self.full_df.iterrows()]
                 path_df=self.full_df[["branch.coords", "branch.col", "branch.opacity"]]
             fig.update_layout(
-                shapes=[dict(type="path",path=branch["branch.coords"],fillcolor=branch["branch.col"], line_color=branch["branch.col"], opacity=branch["branch.opacity"]) for i, branch in path_df.iterrows()])
+                shapes=[dict(type="path",path=branch["branch.coords"],fillcolor=branch["branch.col"], line_color=branch["branch.col"], opacity=branch["branch.opacity"]) for i, branch in path_df.iterrows()],uirevision="nochange")
             fig.update_shapes(layer="below")
         self.visible_paths = list(self.full_df["group"].drop_duplicates().reset_index()["group"])
         
