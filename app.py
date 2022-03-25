@@ -11,6 +11,9 @@ import plotly.graph_objects as go
 from tree_graph import Tree_plotter
 from layout import app_layout
 
+version_number=1.1
+update_date="2022-03-24"
+
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -84,6 +87,14 @@ def draw_tree(contents, use_default, graph_type):
             style={
                'width': '100%',
                'height': '100%'})
+
+@app.callback(
+    Output('version-text', 'children'),
+    Input('title','children'),
+)
+def update_version_text(children):
+    children="Created by Piotr Kasprowicz. Version {0} Updated on {1}".format(version_number,update_date)
+    return children
 
 #Update name of uploaded file
 @app.callback(
