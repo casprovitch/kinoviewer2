@@ -26,14 +26,20 @@ styles = {
 #################### APPLICATION LAYOUT ####################
 
 app_layout = html.Div(children=[
-    html.H1(
-        children='KINOVIEWER 2',
+    html.Div(children=[
+        html.H1(
+        id='title',
+        children='Kinoviewer 2',
         style={
             'textAlign': 'center',
-            'color': 'black'
-        }
-    ),
-    html.Div(children=[
+            'color': 'black',
+            'font-weight': 'bold',
+            'font-variant': 'small-caps',
+        }),
+
+    
+    ]),
+    html.Div(id='top-menu',children=[
 
             html.Div([
                 dcc.Upload(
@@ -66,9 +72,9 @@ app_layout = html.Div(children=[
                     options=[
                             {'label': 'Use default dataset', 'value': 'default'},
                         ],
-                        value=[]
-                    )
-            ],style={'display': 'inline-block','vertical-align': 'top', 'margin': '10px'}),
+                        value=[],
+                    style={'margin': '10px'})
+            ],style={'display': 'inline-block','vertical-align': 'top', 'margin': 'auto'}),
             html.Div([
                 html.Div(children=[
                     html.Div(children=[
@@ -88,13 +94,13 @@ app_layout = html.Div(children=[
                                 style={'textAlign': 'center',
                                    'width': '200px',
                                    'height': '60px',
+                                   'margin': '10px',
                                    'vertical-align': 'top',
                                    'display': 'inline-block',
                                    'background-color': 'green',
-                                   'color': 'white'})
-                        ], style={'display': 'inline-block'}),
-                ],style={'display': 'inline-block','vertical-align': 'top', 'margin': '10px'}),
-            html.Button("Help?", id="help-button",
+                                   'color': 'white',
+                                   'border-radius': '25px'}),
+                    html.Button("Help?", id="help-button",
                         style={'textAlign': 'center',
                                'width': '200px',
                                'height': '60px',
@@ -103,7 +109,9 @@ app_layout = html.Div(children=[
                                'display': 'inline-block',
                                'background-color': 'blue',
                                'color': 'white',
-                               'float': 'right'}),
+                                'border-radius': '25px'})
+                        ], style={'display': 'inline-block'}),
+                ],style={'display': 'inline-block','vertical-align': 'top', 'margin': 'auto', 'align': 'center'}),
 
             dbc.Modal(
                 [
@@ -126,9 +134,9 @@ app_layout = html.Div(children=[
                 backdrop=False,
                 is_open=False)
     
-                ]),
+                ],style={'vertical-align': 'top', 'width': '60%', 'margin': 'auto', 'align': 'center'}),
 
-    html.Div([
+    html.Div(id='graph-and-sidebar',children=[
         html.Div(id='output-data-upload',
                      style={'width': '70%', 'height': '100%',
                             'border': 'thin lightgrey solid',
@@ -190,8 +198,10 @@ app_layout = html.Div(children=[
                         ], style={'vertical-align': 'top', 'width': '30vh', 'height': '30vh'})
                 ], style={'vertical-align': 'top', 'display': 'inline-block'})
 
-        ], style={'height': '90%', 'width': '90%','margin': '10px','vertical-align': 'top','border': 'thin lightgrey solid'}),
-    ], style={'height': '100vh', 'width': '100vw'})
+        ], style={'height': '90%', 'width': '90%','margin': 'auto','vertical-align': 'top','border': 'thin lightgrey solid'}),
+    html.A(id='version-text',style={'float':'right','margin-right': '100px'})
+    ], style={'height': '100vh', 'width': '100vw', 'align': 'center'})
+    
 
 if __name__ == '__main__':
     app.layout = app_layout
